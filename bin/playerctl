@@ -1,0 +1,118 @@
+#!/usr/bin/env python
+import argparse
+import json
+import pprint
+import time
+
+from soundfleet_player.cache import (
+    AudioTracksCache,
+    MusicBlocksCache,
+    AdBlocksCache,
+    DeviceCache,
+)
+from soundfleet_player.conf import settings
+from soundfleet_player.device import Device
+from soundfleet_player.utils import get_redis_conn
+
+
+class Playerctl:
+    def __init__(self):
+        self._device = Device()
+        self._redis = get_redis_conn()
+
+    def skip_track(self, timeout=1):
+        start = time.time()
+        signal = json.dumps(("SKIP", []))
+        while not self._redis.publish(settings.PLAYER_REDIS_CHANNEL, signal):
+            if time.time() - start > timeout:
+                raise Exception(f"Signal: {signal} timed out.")
+            continue
+
+    def set_volume(self, value, timeout=1):
+        exc = None
+        current_volume = self._receiver.volume
+        self._receiver.update_receiver_state_cache(volume=value)
+        start = time.time()
+        signal = json.dumps(("SET_VOLUME", [value]))
+        while not self._redis.publish(settings.PLAYER_REDIS_CHANNEL, signal):
+            if time.time() - start > timeout:
+                exc = Exception(f"Signal: {signal} timed out.")
+            continue
+        if exc:
+            self._receiver.update_receiver_state_cache(volume=current_volume)
+            raise exc
+
+    def sync_state(self):
+        self._device.sync()
+
+    def list(self, choice):
+        if choice == "audio_tracks":
+            cache = AudioTracksCache()
+            return cache.all()
+        elif choice == "music_blocks":
+            cache = MusicBlocksCache()
+            return cache.get()
+        elif choice == "ad_blocks":
+            cache = AdBlocksCache()
+            return cache.get()
+        elif choice == "device":
+            cache = DeviceCache()
+            return cache.get()
+
+    def disable(self):
+        self._receiver.disable()
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(prog="Player control program")
+    subparsers = parser.add_subparsers()
+    sync = subparsers.add_parser(
+        "sync", help="Synchronize (audio tracks, schedules, calendar)"
+    )
+    sync.add_argument("sync", action="store_true")
+    set_volume = subparsers.add_parser(
+        "set_volume", help="Change player volume"
+    )
+    set_volume.add_argument(
+        "volume",
+        type=int,
+        choices=range(0, 101),
+        metavar="[0-100]",
+    )
+    set_volume.add_argument("-t", "--timeout", help="Timeout", type=int)
+    skip_track = subparsers.add_parser("skip_track", help="Skip current track")
+    skip_track.add_argument("skip_track", action="store_true")
+    skip_track.add_argument("-t", "--timeout", help="Timeout", type=int)
+    lst = subparsers.add_parser("list")
+    lst.add_argument(
+        "list",
+        choices=[
+            "audio_tracks",
+            "music_blocks",
+            "ad_blocks",
+            "device",
+        ],
+    )
+    args = parser.parse_args()
+    return args
+
+
+if __name__ == "__main__":
+    try:
+        args = parse_args()
+        ctl = Playerctl()
+        result = None
+
+        if hasattr(args, "list"):
+            result = ctl.list(args.list)
+        if hasattr(args, "sync"):
+            ctl.sync_state()
+        if hasattr(args, "volume"):
+            timeout = args.timeout or 1
+            ctl.set_volume(args.volume, timeout=timeout)
+        if hasattr(args, "skip_track"):
+            timeout = args.timeout or 1
+            ctl.skip_track(timeout=timeout)
+        pprint.pprint({"result": result or "OK"})
+    except Exception as e:
+        pprint.pprint({"result": "FAIL", "error": str(e)})

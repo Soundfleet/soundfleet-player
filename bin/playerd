@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+# Player daemon
+import argparse
+import daemon
+import importlib
+import logging
+import lockfile
+import sys
+
+from soundfleet_player.conf import settings
+from soundfleet_player.player import Player
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--no-detach", dest="no_detach", action="store_true")
+    args = parser.parse_args()
+    return args
+
+
+def main():
+    media_backend_module = importlib.import_module(settings.MEDIA_BACKEND)
+    player = Player(media_backend_module.MediaBackend())
+    player.run()
+
+
+if __name__ == "__main__":
+    args = parse_args()
+
+    if args.no_detach:
+        logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+        main()
+    else:
+        context = daemon.DaemonContext(
+            pidfile=lockfile.FileLock("/var/run/playerd.pid")
+        )
+        with context:
+            main()

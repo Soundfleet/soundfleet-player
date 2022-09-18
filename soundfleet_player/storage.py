@@ -1,11 +1,12 @@
 import logging
 import os
-from typing import Union
-
 import requests
 import shutil
 
+from typing import Union
+
 from soundfleet_player.conf import settings
+from soundfleet_player.types import AudioTrack
 
 
 logger = logging.getLogger(__name__)
@@ -32,7 +33,7 @@ class AudioTrackStorage:
     def track_file_exists(self, track):
         return os.path.exists(self._get_path(track))
 
-    def download(self, track):
+    def download(self, track: AudioTrack):
         if not self.track_file_exists(track):
             while not self.can_download(self._download_dir, track):
                 logger.debug(

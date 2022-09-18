@@ -99,7 +99,7 @@ class DownloadLRUCache(RedisCache):
             self._redis.set(self.get_key(fname), init_t)
 
     def get_key(self, filename="*"):
-        return f"DL:{filename}"
+        return f"DL_CACHE:{filename}"
 
     def touch(self, filename):
         key = self.get_key(filename)

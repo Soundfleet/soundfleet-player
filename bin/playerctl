@@ -30,8 +30,8 @@ class Playerctl:
 
     def set_volume(self, value, timeout=1):
         exc = None
-        current_volume = self._receiver.volume
-        self._receiver.update_receiver_state_cache(volume=value)
+        current_volume = self._device.volume
+        self._device.update_device_state_cache(volume=value)
         start = time.time()
         signal = json.dumps(("SET_VOLUME", [value]))
         while not self._redis.publish(settings.PLAYER_REDIS_CHANNEL, signal):
@@ -39,7 +39,7 @@ class Playerctl:
                 exc = Exception(f"Signal: {signal} timed out.")
             continue
         if exc:
-            self._receiver.update_receiver_state_cache(volume=current_volume)
+            self._device.update_device_state_cache(volume=current_volume)
             raise exc
 
     def sync_state(self):
@@ -58,9 +58,6 @@ class Playerctl:
         elif choice == "device":
             cache = DeviceCache()
             return cache.get()
-
-    def disable(self):
-        self._receiver.disable()
 
 
 def parse_args():

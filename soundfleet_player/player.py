@@ -92,7 +92,6 @@ class Player:
             logger.error(f"Player started playing {track}")
         else:
             logger.error(f"Unable to play {track}")
-        
 
     def _skip(self):
         if self._current_track and self._is_playing():

@@ -15,7 +15,7 @@ class MediaBackend:
         self._player.stop()
 
     def is_playing(self) -> bool:
-        self._player.is_playing()
+        return self._player.is_playing()
 
     def set_volume(self, value: int) -> None:
         value = min(max(value, 0), 100)

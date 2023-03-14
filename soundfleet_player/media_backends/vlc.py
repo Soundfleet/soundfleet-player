@@ -8,7 +8,7 @@ class MediaBackend:
         self._player = vlc.MediaPlayer()
 
     def play(self, track: AudioTrack):
-        self._player.set_media(vlc.Media(track.uri))
+        self._player.set_media(vlc.Media(track["uri"]))
         self._player.play()
 
     def stop(self) -> None:

@@ -89,7 +89,7 @@ class Player:
             )
             time.sleep(1)
         if self._is_playing():
-            logger.error(f"Player started playing {track}")
+            logger.info(f"Player started playing {track}")
         else:
             logger.error(f"Unable to play {track}")
 

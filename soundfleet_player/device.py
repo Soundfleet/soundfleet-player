@@ -47,12 +47,15 @@ class Device:
     def sync(self):
         if self._sync_in_progress:
             return
-        state = self.get_state()
-        self._cache.set(state["device"])
-        self._music_blocks_cache.set(state["music_blocks"])
-        self._ad_blocks_cache.set(state["ad_blocks"])
-        self._audio_tracks_cache.update(state["audio_tracks"])
-        self._ack_sync()
+        try:
+            state = self.get_state()
+            self._cache.set(state["device"])
+            self._music_blocks_cache.set(state["music_blocks"])
+            self._ad_blocks_cache.set(state["ad_blocks"])
+            self._audio_tracks_cache.update(state["audio_tracks"])
+            self._ack_sync()
+        except SyncFailed:
+            logger.error("Failed to sync device, using state from cache.")
 
     def get_state(self) -> DeviceState:
         sync_id = self._start_sync_task()

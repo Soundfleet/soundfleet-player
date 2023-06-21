@@ -53,9 +53,10 @@ class Device:
             self._music_blocks_cache.set(state["music_blocks"])
             self._ad_blocks_cache.set(state["ad_blocks"])
             self._audio_tracks_cache.update(state["audio_tracks"])
-            self._ack_sync()
         except SyncFailed:
             logger.error("Failed to sync device, using state from cache.")
+        finally:
+            self._ack_sync()
 
     def get_state(self) -> DeviceState:
         sync_id = self._start_sync_task()

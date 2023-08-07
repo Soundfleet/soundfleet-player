@@ -4,7 +4,6 @@ from typing import Literal, TypedDict
 
 
 class AudioTrack(TypedDict):
-
     id: int
     file: str
     track_type: Literal["music", "ad"]
@@ -14,7 +13,6 @@ class AudioTrack(TypedDict):
 
 
 class MusicBlock(TypedDict):
-
     id: int
     start: datetime.time
     end: datetime.time
@@ -22,7 +20,6 @@ class MusicBlock(TypedDict):
 
 
 class AdBlock(TypedDict):
-
     id: int
     start: datetime.time
     end: datetime.time
@@ -33,7 +30,6 @@ class AdBlock(TypedDict):
 
 
 class Device(TypedDict):
-
     id: str
     timezone_name: str
     volume: int
@@ -41,7 +37,6 @@ class Device(TypedDict):
 
 
 class DeviceState(TypedDict):
-
     device: Device
     audio_tracks: list[AudioTrack]
     music_blocks: list[MusicBlock]

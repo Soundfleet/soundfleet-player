@@ -53,12 +53,12 @@ def test_storage_file_rotation(track_file_exists, disk_usage, delete_file, *_):
 
         @property
         def free(self):
-            self._free += 2 ** 20
+            self._free += 2**20
             return self._free
 
     disk_usage.return_value = MyDiskUsage()
     track_file_exists.return_value = False
-    track = {"url": "", "file": "test.ogg", "size": 2 ** 20}
+    track = {"url": "", "file": "test.ogg", "size": 2**20}
     AudioTrackStorage().download(track)
     assert delete_file.call_count == 1024
 
@@ -75,16 +75,16 @@ def test_file_rotation_removes_least_used_file(
     track_file_exists, disk_usage, delete_file, *_
 ):
     class MyDiskUsage:
-        _free = 99 * 2 ** 20
+        _free = 99 * 2**20
 
         @property
         def free(self):
-            self._free += 2 ** 20
+            self._free += 2**20
             return self._free
 
     disk_usage.return_value = MyDiskUsage()
     track_file_exists.return_value = False
-    track = {"url": "", "file": "test.ogg", "size": 2 ** 20}
+    track = {"url": "", "file": "test.ogg", "size": 2**20}
     storage = AudioTrackStorage()
     storage._download_lru_cache.touch("to_delete.ogg")
     time.sleep(1)

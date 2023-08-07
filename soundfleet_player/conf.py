@@ -16,9 +16,10 @@ class Settings(dict):
 def setup_settings():
     env = environ.Env()
     env.read_env(env_file="/etc/soundfleet.env")
+    DEBUG = env("DEBUG", default=0)
     try:
         return Settings(
-            DEBUG=env("DEBUG", default=0),
+            DEBUG=DEBUG,
             DEVICE_ID=env("DEVICE_ID"),
             APP_URL=env("APP_URL"),
             API_KEY=env("API_KEY"),
@@ -34,7 +35,29 @@ def setup_settings():
             PLAYER_REDIS_CHANNEL=env(
                 "PLAYER_REDIS_CHANNEL", default="PLAYER_REDIS_CHANNEL"
             ),
-            PLAYER_LOG_FILE=env("PLAYER_LOG_FILE", default="/var/log/player.log")
+            LOGGING_CONFIG={
+                "version": 1,
+                "disable_existing_loggers": True,
+                "formatters": {
+                    "standard": {
+                        "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+                    },
+                },
+                "handlers": {
+                    "default": {
+                        "level": "DEBUG" if DEBUG else "INFO",
+                        "formatter": "standard",
+                        "class": "logging.StreamHandler"
+                    },
+                    # logstash: TODO
+                },
+                "loggers": {
+                    "": {
+                        "handlers": ["default"],
+                        "level": "DEBUG" if DEBUG else "INFO",
+                    }
+                }
+            },
         )
     except KeyError as e:
         raise ImproperlyConfigured("Set {} environment variable.".format(e))

@@ -27,7 +27,6 @@ def make_request(
     request_timeout=None,
     response_timeout=None,
 ):
-
     timeout = request_timeout or 5, response_timeout or 10
     func = getattr(requests, method)
     headers = _get_auth_headers() if headers is None else headers

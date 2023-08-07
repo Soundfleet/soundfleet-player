@@ -1,18 +1,13 @@
 #!/usr/bin/env python
-
-# Player daemon
 import argparse
-import daemon
-import lockfile
 import logging
-import sys
 
 from soundfleet_player.scheduler import Scheduler
+from soundfleet_player.conf import settings
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--no-detach", dest="no_detach", action="store_true")
     args = parser.parse_args()
     return args
 
@@ -24,13 +19,5 @@ def main():
 
 if __name__ == "__main__":
     args = parse_args()
-
-    if args.no_detach:
-        logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-        main()
-    else:
-        context = daemon.DaemonContext(
-            pidfile=lockfile.FileLock("/var/run/schedulerd.pid")
-        )
-        with context:
-            main()
+    logging.config.dictConfig(settings.LOGGING_CONFIG)
+    main()

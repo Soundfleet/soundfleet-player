@@ -7,7 +7,6 @@ from soundfleet_player.utils import get_redis_conn
 
 
 class RedisCache:
-
     _redis = None
 
     def __init__(self):

@@ -27,12 +27,10 @@ logger = logging.getLogger(__name__)
 
 
 class SyncFailed(Exception):
-
     pass
 
 
 class Device:
-
     SYNC_RETRY_COUNT = 10
     SYNC_COUNTDOWN_TIME = 10
 
@@ -195,7 +193,5 @@ class Device:
 
     def _ack_sync(self) -> None:
         signal = json.dumps(("DEVICE_SYNC", []))
-        while not self._redis.publish(
-            settings.SCHEDULER_REDIS_CHANNEL, signal
-        ):
+        while not self._redis.publish(settings.SCHEDULER_REDIS_CHANNEL, signal):
             time.sleep(0.1)

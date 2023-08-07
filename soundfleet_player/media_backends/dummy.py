@@ -6,7 +6,6 @@ from soundfleet_player.types import AudioTrack
 
 
 class MediaBackend:
-
     _is_playing = False
     _volume = 100
 

@@ -24,7 +24,6 @@ logger = logging.getLogger(__name__)
 
 
 class Scheduler:
-
     BUFFER_LENGTH = 10
 
     def __init__(self):
@@ -254,9 +253,7 @@ class Scheduler:
             "track_type": track["track_type"],
             "timestamp": current_time,
         }
-        response = client.make_request(
-            self._ack_play_url, "post", data=payload
-        )
+        response = client.make_request(self._ack_play_url, "post", data=payload)
         logger.debug("Ack play finished with response: {}".format(response))
 
     def _on_track_finished(self, track) -> None:

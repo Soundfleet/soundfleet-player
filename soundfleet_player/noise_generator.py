@@ -97,14 +97,11 @@ class MusicBlockBasedGenerator(BaseGenerator):
 
     def _notify_finished(self):
         signal = json.dumps(("MUSIC_GENERATOR_FINISHED", []))
-        while not self._redis.publish(
-            settings.SCHEDULER_REDIS_CHANNEL, signal
-        ):
+        while not self._redis.publish(settings.SCHEDULER_REDIS_CHANNEL, signal):
             continue
 
 
 class AdBlockBasedGenerator(BaseGenerator):
-
     _current_block_id = None
     _next_block = None
 
@@ -138,9 +135,7 @@ class AdBlockBasedGenerator(BaseGenerator):
 
     def _notify_finished(self):
         signal = json.dumps(("ADS_GENERATOR_FINISHED", []))
-        while not self._redis.publish(
-            settings.SCHEDULER_REDIS_CHANNEL, signal
-        ):
+        while not self._redis.publish(settings.SCHEDULER_REDIS_CHANNEL, signal):
             continue
 
     def _draw_ads(self, block):
@@ -159,8 +154,7 @@ class AdBlockBasedGenerator(BaseGenerator):
                 population, k=block["ads_count_per_block"]
             )
             tracks = [
-                self._device.get_audio_track(track_id)
-                for track_id in track_ids
+                self._device.get_audio_track(track_id) for track_id in track_ids
             ]
         tracks = list(
             map(
@@ -194,7 +188,5 @@ class AdBlockBasedGenerator(BaseGenerator):
                 ],
             )
         )
-        while not self._redis.publish(
-            settings.SCHEDULER_REDIS_CHANNEL, signal
-        ):
+        while not self._redis.publish(settings.SCHEDULER_REDIS_CHANNEL, signal):
             continue

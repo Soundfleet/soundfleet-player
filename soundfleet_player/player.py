@@ -13,11 +13,9 @@ from soundfleet_player.utils import (
 
 
 logger = logging.getLogger(__name__)
-logger.addHandler(logging.FileHandler(settings.PLAYER_LOG_FILE))
 
 
 class Player:
-
     _current_track = None
 
     def __init__(self, media_backend: MediaBackend):
@@ -104,16 +102,12 @@ class Player:
 
     def _ack_ready(self):
         signal = json.dumps(("PLAYER_READY", []))
-        while not self._redis.publish(
-            settings.SCHEDULER_REDIS_CHANNEL, signal
-        ):
+        while not self._redis.publish(settings.SCHEDULER_REDIS_CHANNEL, signal):
             time.sleep(0.1)
 
     def _ack_idle(self):
         signal = json.dumps(("PLAYER_IDLE", []))
-        while not self._redis.publish(
-            settings.SCHEDULER_REDIS_CHANNEL, signal
-        ):
+        while not self._redis.publish(settings.SCHEDULER_REDIS_CHANNEL, signal):
             time.sleep(0.1)
 
     def _ack_play(self):
@@ -125,9 +119,7 @@ class Player:
                 ],
             )
         )
-        while not self._redis.publish(
-            settings.SCHEDULER_REDIS_CHANNEL, signal
-        ):
+        while not self._redis.publish(settings.SCHEDULER_REDIS_CHANNEL, signal):
             time.sleep(0.1)
 
     def _ack_finish(self):
@@ -139,9 +131,7 @@ class Player:
                 ],
             )
         )
-        while not self._redis.publish(
-            settings.SCHEDULER_REDIS_CHANNEL, signal
-        ):
+        while not self._redis.publish(settings.SCHEDULER_REDIS_CHANNEL, signal):
             time.sleep(0.1)
         self._current_track = None
 

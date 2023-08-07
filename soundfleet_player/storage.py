@@ -17,9 +17,8 @@ class DownloadFailed(Exception):
 
 
 class AudioTrackStorage:
-
     _download_dir = settings.DOWNLOAD_DIR
-    _safe_buffer = 2 ** 30  # 1GB
+    _safe_buffer = 2**30  # 1GB
 
     def __init__(self):
         from soundfleet_player.cache import (
@@ -61,9 +60,7 @@ class AudioTrackStorage:
     def remove_tracks(cls, *tracks):
         for track in tracks:
             path = cls._get_path(track)
-            logger.debug(
-                f"Trying to remove file: {path} from local filesystem"
-            )
+            logger.debug(f"Trying to remove file: {path} from local filesystem")
             if os.path.exists(path):
                 os.unlink(path)
 

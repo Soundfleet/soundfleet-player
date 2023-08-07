@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import argparse
 import logging
+import logging.config
 
 from soundfleet_player.scheduler import Scheduler
 from soundfleet_player.conf import settings

@@ -2,7 +2,7 @@
 import argparse
 import importlib
 import logging
-import sys
+import logging.config
 
 from soundfleet_player.conf import settings
 from soundfleet_player.player import Player
@@ -10,7 +10,6 @@ from soundfleet_player.player import Player
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--log-level", dest="log_level")
     args = parser.parse_args()
     return args
 
@@ -23,6 +22,5 @@ def main():
 
 if __name__ == "__main__":
     args = parse_args()
-    log_level = args.log_level and getattr(logging, args.log_level) or logging.INFO
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    logging.config.dictConfig(settings.LOGGING_CONFIG)
     main()

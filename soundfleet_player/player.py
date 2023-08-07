@@ -13,6 +13,7 @@ from soundfleet_player.utils import (
 
 
 logger = logging.getLogger(__name__)
+logger.addHandler(logging.FileHandler(settings.PLAYER_LOG_FILE))
 
 
 class Player:

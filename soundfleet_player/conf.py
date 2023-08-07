@@ -34,7 +34,7 @@ def setup_settings():
             PLAYER_REDIS_CHANNEL=env(
                 "PLAYER_REDIS_CHANNEL", default="PLAYER_REDIS_CHANNEL"
             ),
-            LOGGING={"class": "logging."},
+            PLAYER_LOG_FILE=env("PLAYER_LOG_FILE", default="/var/log/player.log")
         )
     except KeyError as e:
         raise ImproperlyConfigured("Set {} environment variable.".format(e))

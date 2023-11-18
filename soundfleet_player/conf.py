@@ -47,12 +47,13 @@ def setup_settings():
                     "default": {
                         "level": "DEBUG" if DEBUG else "INFO",
                         "formatter": "standard",
-                        "class": "logging.StreamHandler"
+                        "class": "logging.StreamHandler",
+                        "stream": "ext://sys.stdout"
                     },
                     # logstash: TODO
                 },
                 "loggers": {
-                    "": {
+                    "soundfleet_player.player": {
                         "handlers": ["default"],
                         "level": "DEBUG" if DEBUG else "INFO",
                     }

@@ -250,7 +250,6 @@ class Scheduler:
         # ack play on remote server
         payload = {
             "id": track["id"],
-            "track_type": track["track_type"],
             "timestamp": current_time,
         }
         response = client.make_request(self._ack_play_url, "post", data=payload)
